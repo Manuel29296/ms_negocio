@@ -91,7 +91,7 @@ Vehículo:
 	- n-n con Dueño (DueñoVehiculo)  
 	- n-n con Conductor (VehiculoConductor)
 	- n-n con Contrato (Ruta: 
-				- n-n con Dirección (Dir lista|Orden))
+	- n-n con Dirección (Dir lista|Orden))
 Seguro: 
 	- n-1 con Vehiculo
 
