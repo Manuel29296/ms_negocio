@@ -1,0 +1,121 @@
+Entidades y sus relaciones:
+
+Categoría: 
+	- 1 a n con ella misma
+	- n a n con Producto (CategoriaProductos)
+
+Producto: 
+	- n-1 con Lote
+	- n-1 con cliente
+	- n-n con Categoría (CategoriaProductos)
+	
+Lote: 
+	- 1-1 con Dir lista|Orden
+	- n-1 con Ruta
+	- 1-n con Producto
+	
+Departamento:
+	- 1-n con Municipios
+
+Municipio:
+	- n-1 con Departamento
+	- n-n con Vehículo (Operación)
+	- 1-n con Centros Distribución
+	- 1-n con Dirección
+
+Dirección:
+	- n-1 con Municipio
+	- 1-1 con Centros Distribución
+	- n-n con Ruta ( Dir lista|Orden:
+					- 1-1 con Lote)
+	
+Centros Distribución:
+	- n-1 con Municipio
+	- 1-1 con Dirección
+
+Cliente:
+	- Hereda de Empresa
+	- hereda de Persona Natural
+	- 1-n con Contrato
+	- 1-n con Producto
+
+Empresa:
+	- Hereda de Cliente
+	- 1-1 con Persona Natural
+
+Persona Natural: 
+	- Hereda de Cliente
+	- 1-1 con Empresa
+
+Contrato: 
+	- n-q con Cliente
+	- n-n con Vehiculo (Ruta:
+				- 1-n con Lote 
+				- n-n con Dirección (Dir lista|Orden))
+	- 1-n con Cuota
+	
+Cuota:
+	- n-1 con Contrato
+	- 1-1 con Factura
+	
+Servicio:
+	-n-n con Conductor (Gasto: 
+				- 1-1 con Factura
+				- n-1 con Dueño)
+
+Restaurante:
+	- Hereda de  Servicio
+
+Hotel:
+	- Hereda de Servicio
+
+Factura: 
+	- 1-1 con Cuota
+	- 1-1 con Gasto
+	
+Conductor:
+	- n-n con Vehiculo (VehiculoConductor)
+	- Hereda de Dueño
+	- Hereda de Usuario
+	- n-n con Servicio (Gasto: 
+				- 1-1 con Factura
+				- n-1 con Dueño)
+	- 1-n con Turno
+
+Turno:
+	- n-1 con Conductor
+
+Vehículo:
+	- n-n con Municipio
+	- 1-n con Seguro
+	- n-n con Dueño (DueñoVehiculo)  
+	- n-n con Conductor (VehiculoConductor)
+	- n-n con Contrato (Ruta: 
+				- n-n con Dirección (Dir lista|Orden))
+Seguro: 
+	- n-1 con Vehiculo
+
+Dueño:
+	- n-n con Vehiculo (DueñoVehiculo)
+	- 1-n con Gasto
+	- Hereda de Usuario
+	- Hereda de Conductor
+
+Administrador:
+	- 1-1 con Servicio ( Parce que hereda también)
+
+Usuario: 
+	- Hereda de Dueño
+	- Hereda de Persona Natural
+	- Hereda de Administrador
+	- Hereda de Conductor
+	
+	
+
+
+
+
+
+
+
+    
