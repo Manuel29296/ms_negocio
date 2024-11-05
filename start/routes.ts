@@ -24,6 +24,12 @@ Route.get('/', async () => {
   return { hello: 'world' }
 })
 
+import "./routes/facturas"
+import "./routes/propietarioVehiculo"
+import "./routes/seguros"
+import "./routes/vehiculos"
+import "./routes/propietarios"
+
 import "./routes/categoriaProductos"
 import "./routes/categorias"
 import "./routes/lotes"
