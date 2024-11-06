@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column, ManyToMany, manyToMany } from '@ioc:Adonis/Lucid/Orm'
-import Vehiculo from './Vehiculo'
+import { BaseModel, column, HasMany, hasMany} from '@ioc:Adonis/Lucid/Orm'
+import PropietarioVehiculo from './PropietarioVehiculo'
 
 export default class Propietario extends BaseModel {
   @column({ isPrimary: true })
@@ -19,10 +19,8 @@ export default class Propietario extends BaseModel {
   public updatedAt: DateTime
 
     //Relación de muchos a muchos con la tabla vehículo a través de la tabla propietario_vehiculo
-    @manyToMany(() => Vehiculo, {
-      pivotTable: "propietario_vehiculo",
-      pivotForeignKey: "propietario_id",
-      pivotRelatedForeignKey: "vehiculo_id"
-    })
-    public vehiculos: ManyToMany<typeof Vehiculo>;
+    @hasMany(() => PropietarioVehiculo, {
+        foreignKey: 'propietario_id'  
+    }) public propietariosVehiculos: HasMany<typeof PropietarioVehiculo>
+    
 }
