@@ -1,7 +1,6 @@
 import { DateTime } from 'luxon'
-import { BaseModel, BelongsTo, belongsTo, column, HasMany, hasMany } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, column, HasMany, hasMany } from '@ioc:Adonis/Lucid/Orm'
 import Producto from './Producto'
-import Ruta from './Ruta'
 
 export default class Lote extends BaseModel {
   @column({ isPrimary: true })
@@ -19,7 +18,6 @@ export default class Lote extends BaseModel {
   @column()
   public cantidad_productos: number
 
-  // Añadir la relación ruta_id
   @column()
   public ruta_id: number
 
@@ -31,14 +29,8 @@ export default class Lote extends BaseModel {
 
   // Relación 1 a muchos con Producto
   @hasMany(() => Producto, {
-    foreignKey: 'lote_id', // Asegúrate de que esto coincida con el campo en Producto
+    foreignKey: 'producto_id', 
   })
   public productos: HasMany<typeof Producto>
-
-  // Relación muchos a 1 con Ruta
-  @belongsTo(() => Ruta, {
-    foreignKey: 'ruta_id', // Esto debe coincidir con el campo en Lote
-  })
-  public ruta: BelongsTo<typeof Ruta>
 }
 

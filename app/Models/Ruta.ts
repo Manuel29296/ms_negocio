@@ -21,6 +21,9 @@ export default class Ruta extends BaseModel {
   @column()
   public costo_estimado: number 
 
+  @column()
+  public lote_id: number
+
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 
@@ -29,7 +32,7 @@ export default class Ruta extends BaseModel {
 
   // Relación uno a muchos con Lote
   @hasMany(() => Lote, {
-    foreignKey: 'ruta_id', // Debe coincidir con el campo en Lote
+    foreignKey: 'lote_id', 
   })
   public lotes: HasMany<typeof Lote>
 }
