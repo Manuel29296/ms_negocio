@@ -6,11 +6,14 @@ export default class CategoriasController {
     // Método para buscar una categoría por ID o listar todas las categorías
     public async find({ request, params }: HttpContextContract) {
         if (params.id) {
-            // Si se proporciona un ID, buscar la categoría
-            const theCategoria: Categoria = await Categoria.findOrFail(params.id)
+            // Cargar la categoría con sus subcategorías cuando se proporciona un ID específico
+            const theCategoria = await Categoria.query()
+                .where('id', params.id)
+                .preload('subcategorias') // Pre-cargar la relación de subcategorías
+                .firstOrFail()
             return theCategoria
         } else {
-            // Si no se proporciona ID, paginar o listar todas las categorías
+            // Si no se proporciona ID, paginar o listar todas las categorías sin preload
             const data = request.all()
             if ("page" in data && "per_page" in data) {
                 const page = request.input('page', 1)
@@ -52,4 +55,3 @@ export default class CategoriasController {
         return await theCategoria.delete() // Eliminar la categoría
     }
 }
-

@@ -19,7 +19,7 @@ export default class Lote extends BaseModel {
   public cantidad_productos: number
 
   @column()
-  public ruta_id: number
+  public producto_id: number
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime

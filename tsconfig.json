@@ -9,7 +9,7 @@
   ],
   "compilerOptions": {
     "outDir": "build",
-    "rootDir": "c:/Users/JackelineR/OneDrive/Escritorio/ms_negocio",
+    "rootDir": "C:/Users/manue/OneDrive/Escritorio/Prog_3/ms_negocio",
     "baseUrl": "./",
     "sourceMap": true,
     "paths": {
