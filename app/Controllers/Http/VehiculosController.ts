@@ -31,7 +31,7 @@ export default class VehiculosController {
         const theVehiculo: Vehiculo = await Vehiculo.findOrFail(params.id);
         const body = request.body();
         theVehiculo.marca = body.marca;
-        theVehiculo.tipoCarga = body.tipoCarga;
+        theVehiculo.tipo_carga = body.tipoCarga;
         theVehiculo.placa = body.placa;
         theVehiculo.capacidad = body.capacidad;
         return await theVehiculo.save();

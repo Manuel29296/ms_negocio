@@ -35,3 +35,11 @@ import "./routes/categorias"
 import "./routes/lotes"
 import "./routes/productos"
 import "./routes/rutas"
+
+import "./routes/usuarios"
+import "./routes/hotel"
+import "./routes/servicios"
+import "./routes/conductores"
+import "./routes/turnos"
+import "./routes/vehiculoConductor"
+
