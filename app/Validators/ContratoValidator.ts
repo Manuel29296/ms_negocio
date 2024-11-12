@@ -1,40 +1,38 @@
-import { schema, CustomMessages } from '@ioc:Adonis/Core/Validator'
+import { schema, CustomMessages, rules } from '@ioc:Adonis/Core/Validator'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
 export default class ContratoValidator {
   constructor(protected ctx: HttpContextContract) {}
 
-  /*
-   * Define schema to validate the "shape", "type", "formatting" and "integrity" of data.
-   *
-   * For example:
-   * 1. The username must be of data type string. But then also, it should
-   *    not contain special characters or numbers.
-   *    ```
-   *     schema.string([ rules.alpha() ])
-   *    ```
-   *
-   * 2. The email must be of data type string, formatted as a valid
-   *    email. But also, not used by any other user.
-   *    ```
-   *     schema.string([
-   *       rules.email(),
-   *       rules.unique({ table: 'users', column: 'email' }),
-   *     ])
-   *    ```
-   */
-  public schema = schema.create({})
+  public schema = schema.create({
+    fecha_creacion: schema.date({ format: 'yyyy-MM-dd' }, [rules.required()]), // Fecha de creación del contrato
+    fecha_inicio: schema.date({ format: 'yyyy-MM-dd' }, [rules.required()]), // Fecha de inicio del contrato
+    fecha_fin_estimada: schema.date({ format: 'yyyy-MM-dd' }, [rules.required()]), // Fecha estimada de fin del contrato
+    estado: schema.string([ // El estado del contrato (por ejemplo: 'activo', 'finalizado', etc.)
+      rules.required(),
+      rules.maxLength(255), 
+    ]),
+    punto_origen: schema.string([ // El punto de origen del transporte
+      rules.required(),
+      rules.maxLength(255), 
+    ]),
+    puntos_intermedios: schema.object.optional().anyMembers(), // Puede ser un objeto JSON
+    punto_destino: schema.string([ // El punto de destino del transporte
+      rules.required(),
+      rules.maxLength(255), 
+    ]),
+  })
 
-  /**
-   * Custom messages for validation failures. You can make use of dot notation `(.)`
-   * for targeting nested fields and array expressions `(*)` for targeting all
-   * children of an array. For example:
-   *
-   * {
-   *   'profile.username.required': 'Username is required',
-   *   'scores.*.number': 'Define scores as valid numbers'
-   * }
-   *
-   */
-  public messages: CustomMessages = {}
+  public messages: CustomMessages = {
+    'fecha_creacion.required': 'La fecha de creación es obligatoria',
+    'fecha_inicio.required': 'La fecha de inicio es obligatoria',
+    'fecha_fin_estimada.required': 'La fecha de fin estimada es obligatoria',
+    'estado.required': 'El estado del contrato es obligatorio',
+    'estado.maxLength': 'El estado del contrato no puede tener más de 255 caracteres',
+    'punto_origen.required': 'El punto de origen es obligatorio',
+    'punto_origen.maxLength': 'El punto de origen no puede tener más de 255 caracteres',
+    'punto_destino.required': 'El punto de destino es obligatorio',
+    'punto_destino.maxLength': 'El punto de destino no puede tener más de 255 caracteres',
+  }
 }
+

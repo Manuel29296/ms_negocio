@@ -1,5 +1,7 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column, HasMany, hasMany } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, BelongsTo, belongsTo, column, HasMany, hasMany } from '@ioc:Adonis/Lucid/Orm'
+import Vehiculo from './Vehiculo'
+import Contrato from './Contrato'
 import Lote from './Lote'
 
 export default class Ruta extends BaseModel {
@@ -21,18 +23,22 @@ export default class Ruta extends BaseModel {
   @column()
   public costo_estimado: number 
 
-  @column()
-  public lote_id: number
-
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime
 
-  // Relación uno a muchos con Lote
   @hasMany(() => Lote, {
-    foreignKey: 'lote_id', 
+    foreignKey: 'ruta_id'
   })
   public lotes: HasMany<typeof Lote>
+
+  @belongsTo(() =>  Contrato, {
+    foreignKey: 'contrato_id',
+  }) public contrato: BelongsTo<typeof Contrato>
+
+  @belongsTo(() => Vehiculo, {
+    foreignKey: 'vehiculo_id',
+  }) public vehiculo: BelongsTo<typeof Vehiculo>
 }

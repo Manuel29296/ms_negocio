@@ -7,9 +7,10 @@ export default class extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
 
-      /**
-       * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
-       */
+      table.decimal('monto', 12, 2).notNullable()
+      table.timestamp('fecha_pago', { useTz: true }).nullable()
+      table.integer("contrato_id").unsigned().references("contratoes.id")
+      
       table.timestamp('created_at', { useTz: true })
       table.timestamp('updated_at', { useTz: true })
     })

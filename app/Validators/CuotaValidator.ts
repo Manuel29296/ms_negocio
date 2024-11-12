@@ -1,40 +1,22 @@
-import { schema, CustomMessages } from '@ioc:Adonis/Core/Validator'
+import { schema, CustomMessages, rules } from '@ioc:Adonis/Core/Validator'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
 export default class CuotaValidator {
   constructor(protected ctx: HttpContextContract) {}
 
-  /*
-   * Define schema to validate the "shape", "type", "formatting" and "integrity" of data.
-   *
-   * For example:
-   * 1. The username must be of data type string. But then also, it should
-   *    not contain special characters or numbers.
-   *    ```
-   *     schema.string([ rules.alpha() ])
-   *    ```
-   *
-   * 2. The email must be of data type string, formatted as a valid
-   *    email. But also, not used by any other user.
-   *    ```
-   *     schema.string([
-   *       rules.email(),
-   *       rules.unique({ table: 'users', column: 'email' }),
-   *     ])
-   *    ```
-   */
-  public schema = schema.create({})
+  public schema = schema.create({
+    monto: schema.number([rules.required(), rules.unsigned()]), // Monto debe ser un número positivo
+    fechaPago: schema.date.optional(), // Fecha de pago es opcional
+    contrato_id: schema.number([ // Relación con el contrato, debe existir
+      rules.required(),
+      rules.exists({ table: 'contratoes', column: 'id' }),
+    ]),
+  })
 
-  /**
-   * Custom messages for validation failures. You can make use of dot notation `(.)`
-   * for targeting nested fields and array expressions `(*)` for targeting all
-   * children of an array. For example:
-   *
-   * {
-   *   'profile.username.required': 'Username is required',
-   *   'scores.*.number': 'Define scores as valid numbers'
-   * }
-   *
-   */
-  public messages: CustomMessages = {}
+  public messages: CustomMessages = {
+    'monto.required': 'El monto es obligatorio',
+    'monto.unsigned': 'El monto debe ser un número positivo',
+    'contrato_id.required': 'El contrato es obligatorio',
+    'contrato_id.exists': 'El contrato especificado no existe en la base de datos',
+  }
 }

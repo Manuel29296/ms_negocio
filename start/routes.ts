@@ -35,3 +35,9 @@ import "./routes/categorias"
 import "./routes/lotes"
 import "./routes/productos"
 import "./routes/rutas"
+
+import "./routes/contratos"
+import "./routes/cuotas"
+import "./routes/empresas"
+import "./routes/personaNaturals"
+

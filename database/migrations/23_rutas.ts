@@ -12,9 +12,11 @@ export default class extends BaseSchema {
       table.integer('distancia');
       table.integer('tiempo_estimado');
       table.integer('costo_estimado');
-      table.integer('lote_id').unsigned().references('id').inTable('lotes').onDelete('CASCADE')
+      
       table.timestamp('created_at', { useTz: true })
       table.timestamp('updated_at', { useTz: true })
+      table.integer('contrato_id').unsigned().references('id').inTable('contratoes').onDelete('CASCADE')
+      table.integer('vehiculo_id').unsigned().references('id').inTable('vehiculos').onDelete('CASCADE')
     })
   }
 
