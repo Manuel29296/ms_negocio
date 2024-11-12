@@ -1,4 +1,4 @@
-import { schema, CustomMessages } from '@ioc:Adonis/Core/Validator'
+import { schema, CustomMessages, rules } from '@ioc:Adonis/Core/Validator'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
 export default class UsuarioValidator {
@@ -23,7 +23,25 @@ export default class UsuarioValidator {
    *     ])
    *    ```
    */
-  public schema = schema.create({})
+  public schema = schema.create({
+    nombre: schema.string({}, [
+      rules.alpha({ allow: ['space'] }), // Solo permite letras y espacios
+      rules.maxLength(50), // Limita el nombre a 50 caracteres
+    ]),
+    email: schema.string({}, [
+      rules.email(), // Verifica que el formato sea un email válido
+      rules.unique({ table: 'usuarios', column: 'email' }), // Asegura que el email sea único en la tabla
+    ]),
+    password: schema.string({}, [
+      rules.minLength(8), // La contraseña debe tener al menos 8 caracteres
+      rules.regex(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*#?&]{8,}$/), // Asegura que tenga letras y números
+    ]),
+    telefono: schema.string.optional({}, [
+      rules.mobile({ locale: ['es-CO'] }), // Asegura que sea un número móvil colombiano válido
+      
+    ]),
+    rol: schema.enum(['admin', 'usuario', 'cliente'] as const), // Restringe los valores posibles para el rol
+  })
 
   /**
    * Custom messages for validation failures. You can make use of dot notation `(.)`
