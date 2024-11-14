@@ -7,8 +7,8 @@ export default class Propietario extends BaseModel {
   public id: number
 
   @column()
-  public nombre: string
-
+  public usuario_id: string
+  
   @column()
   public telefono : string
 

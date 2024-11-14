@@ -5,6 +5,12 @@ export default class Cliente extends BaseModel {
   @column({ isPrimary: true })
   public id: number
 
+  @column()
+  public tipo_cliente: string
+
+  @column()
+  public razon_social: string | null
+
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 

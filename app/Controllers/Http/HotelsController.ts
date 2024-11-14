@@ -25,16 +25,23 @@ export default class HotelsController {
   public async create({ request }: HttpContextContract) {
     await request.validate(HotelValidator)
     const body = request.body()
-    const theHotel: Hotel = await Hotel.create(body)
+
+    // Asegúrate de asignar explícitamente servicio_id
+    const theHotel = await Hotel.create({
+      ...body,
+      servicio_id: body.servicio_id, 
+    })
     return theHotel
   }
 
   // Método para actualizar un hotel por ID
   public async update({ params, request }: HttpContextContract) {
-    const theHotel: Hotel = await Hotel.findOrFail(params.id)
+    const theHotel = await Hotel.findOrFail(params.id)
     const body = request.body()
+
     theHotel.nombreHotel = body.nombreHotel
     theHotel.noches = body.noches
+    theHotel.servicio_id = body.servicio_id // Asegúrate de asignar servicio_id también
     return await theHotel.save()
   }
 
