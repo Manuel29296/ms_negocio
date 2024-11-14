@@ -13,6 +13,7 @@ export default class extends BaseSchema {
       table.integer('cantidad_productos') 
       table.integer('producto_id').unsigned().references('id').inTable('productos').onDelete('CASCADE') 
       table.integer('ruta_id').unsigned().references('id').inTable('rutas').onDelete('CASCADE')
+      table.integer("listaOrden_id").unsigned().references('id').inTable('lista_ordens').onDelete('CASCADE')
       table.timestamp('created_at', { useTz: true })
       table.timestamp('updated_at', { useTz: true })
     })

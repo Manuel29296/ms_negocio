@@ -25,6 +25,9 @@ export default class Lote extends BaseModel {
   @column()
   public ruta_id: number
 
+  @column()
+  public listaOrden_id : number
+
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 

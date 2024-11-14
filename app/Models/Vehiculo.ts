@@ -3,6 +3,7 @@ import { BaseModel, column, HasMany, hasMany} from "@ioc:Adonis/Lucid/Orm";
 import Seguro from "./Seguro";
 import PropietarioVehiculo from "./PropietarioVehiculo";
 import VehiculoConductor from "./VehiculoConductor";
+import Operacion from "./Operacion";
 
 export default class Vehiculo extends BaseModel {
   @column({ isPrimary: true })
@@ -26,7 +27,7 @@ export default class Vehiculo extends BaseModel {
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime;
 
-  //Relación de muchos a muchos con la tabla propietario a través de la tabla propietario_vehiculo
+  //Relación de muchos a muchos 
   @hasMany(() => PropietarioVehiculo, {
     foreignKey: "vehiculo_id",
   }) public propietariosVehiculos: HasMany<typeof PropietarioVehiculo>;
@@ -34,4 +35,8 @@ export default class Vehiculo extends BaseModel {
   @hasMany(() => VehiculoConductor, {
     foreignKey: "vehiculo_id",
   }) public vehiculosConductores: HasMany<typeof VehiculoConductor>;
+
+  @hasMany(() => Operacion, {
+    foreignKey: "vehiculo_id",
+  }) public operaciones: HasMany<typeof Operacion>;
 }
