@@ -10,9 +10,7 @@ export default class extends BaseSchema {
       table.integer("noches")
 
 
-      /**
-       * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
-       */
+      table.integer('servicio_id').unsigned().references('id').inTable('servicios').onDelete('CASCADE')
       table.timestamp('created_at', { useTz: true })
       table.timestamp('updated_at', { useTz: true })
     })
