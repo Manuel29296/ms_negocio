@@ -12,7 +12,8 @@ export default class ServiciosController {
             if ("page" in data && "per_page" in data) {
                 const page = request.input('page', 1);
                 const perPage = request.input("per_page", 20);
-                return await Servicio.query().paginate(page, perPage)
+                let servicios:Servicio[] = await Servicio.query().preload('administrador').paginate(page, perPage)
+                return servicios;
             } else {
                 return await Servicio.query()
             }
