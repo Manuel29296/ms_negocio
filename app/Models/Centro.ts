@@ -6,6 +6,15 @@ export default class Centro extends BaseModel {
   @column({ isPrimary: true })
   public id: number
 
+  @column()
+  public nombre: string
+
+  @column()
+  public telefono: string
+
+  @column()
+  public municipio_id: number
+
   @hasOne(() => Direccion, {
     foreignKey: 'centro_id',
   }) public direccion: HasOne<typeof Direccion>

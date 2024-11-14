@@ -14,6 +14,8 @@ export default class extends BaseSchema {
       table.string('punto_origen').notNullable()
       table.json('puntos_intermedios').nullable()
       table.string('punto_destino').notNullable()
+
+      table.integer('cliente_id').unsigned().references('id').inTable('clientes').onDelete('CASCADE')
       
       table.timestamp('created_at', { useTz: true })
       table.timestamp('updated_at', { useTz: true })

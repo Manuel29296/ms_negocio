@@ -6,6 +6,12 @@ export default class ListaOrden extends BaseModel {
   @column({ isPrimary: true })
   public id: number
 
+  @column()
+  public direccion_id: number
+
+  @column()
+  public ruta_id: number
+
   @hasOne(() => Lote, {
     foreignKey: 'listaOrden_id',
   }) public lote: HasOne<typeof Lote>

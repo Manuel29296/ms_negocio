@@ -9,15 +9,6 @@ export default class Empresa extends BaseModel {
   public nombre: string
 
   @column()
-  public direccion: string
-
-  @column()
-  public telefono: string | null
-
-  @column()
-  public correo: string | null
-
-  @column()
   public persona_natural_id: number | null
 
   @column.dateTime({ autoCreate: true })

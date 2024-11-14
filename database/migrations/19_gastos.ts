@@ -9,6 +9,7 @@ export default class extends BaseSchema {
 
       table.integer("servicio_id").unsigned().references('id').inTable('servicios').onDelete('CASCADE')
       table.integer("conductore_id").unsigned().references('id').inTable('conductors').onDelete('CASCADE')
+      table.integer("propietario_id").unsigned().references('id').inTable('propietarios').onDelete('CASCADE')
 
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL

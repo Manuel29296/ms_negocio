@@ -7,11 +7,6 @@ export default class extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
 
-      table.string('nombre', 255).notNullable()
-      table.string('direccion', 255).notNullable()
-      table.string('telefono', 15).nullable()
-      table.string('correo', 255).nullable()
-
       table.integer('persona_natural_id').unsigned().nullable().references('id').inTable('persona_naturals')
 
       table.timestamp('created_at', { useTz: true })

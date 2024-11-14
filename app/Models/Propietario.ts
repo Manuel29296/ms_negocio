@@ -1,16 +1,11 @@
 import { DateTime } from 'luxon'
 import { BaseModel, column, HasMany, hasMany} from '@ioc:Adonis/Lucid/Orm'
 import PropietarioVehiculo from './PropietarioVehiculo'
+import Gasto from './Gasto'
 
 export default class Propietario extends BaseModel {
   @column({ isPrimary: true })
   public id: number
-
-  @column()
-  public nombre: string
-
-  @column()
-  public telefono : string
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
@@ -22,5 +17,9 @@ export default class Propietario extends BaseModel {
     @hasMany(() => PropietarioVehiculo, {
         foreignKey: 'propietario_id'  
     }) public propietariosVehiculos: HasMany<typeof PropietarioVehiculo>
+
+    @hasMany(() => Gasto, {
+        foreignKey: 'propietario_id'
+    }) public gastos: HasMany<typeof Gasto>
     
 }

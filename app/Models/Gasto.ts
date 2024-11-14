@@ -14,6 +14,9 @@ export default class Gasto extends BaseModel {
   @column()
   public conductore_id: number
 
+  @column()
+  public propietario_id: number
+
   @hasOne(() => Factura, {
     foreignKey: 'gatos_id',
   }) public factura: HasOne<typeof Factura>
@@ -25,6 +28,8 @@ export default class Gasto extends BaseModel {
   @belongsTo(() => Conductor, {
     foreignKey: 'conductor_id',
   }) public conductor: BelongsTo<typeof Conductor>
+
+
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime

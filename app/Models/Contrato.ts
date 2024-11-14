@@ -26,6 +26,9 @@ export default class Contrato extends BaseModel {
   @column()
   public punto_destino: string
 
+  @column()
+  public cliente_id: number
+
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 
