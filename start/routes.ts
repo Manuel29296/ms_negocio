@@ -46,4 +46,6 @@ import "./routes/servicios"
 import "./routes/conductores"
 import "./routes/turnos"
 import "./routes/vehiculoConductor"
+import "./routes/clientes"
+import "./routes/administradors"
 

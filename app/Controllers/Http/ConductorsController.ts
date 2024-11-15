@@ -102,4 +102,3 @@ export default class ConductorsController {
     return await theConductor.delete();
   }
 }
-
