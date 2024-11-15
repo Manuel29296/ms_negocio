@@ -5,16 +5,26 @@ export default class PersonaNaturalValidator {
   constructor(protected ctx: HttpContextContract) {}
 
   public schema = schema.create({
-    usuario_id: schema.string(), 
-    telefono: schema.string.optional({}, [
-      rules.regex(/^\d{10}$/), // Valida que el teléfono contenga exactamente 10 dígitos
+    nombre: schema.string([
+      rules.required(),
+      rules.maxLength(255), // Limitar la longitud del nombre
+    ]),
+    telefono: schema.string.optional([
+      rules.maxLength(15), // Limitar la longitud del teléfono
+      rules.mobile(), // Validar que sea un teléfono móvil
+    ]),
+    correo: schema.string.optional([
+      rules.maxLength(255), // Limitar la longitud del correo
+      rules.email(), // Validar que sea un correo electrónico
     ]),
   })
 
   public messages: CustomMessages = {
-    'usuario_id.required': 'El ID del usuario es obligatorio',
-    'telefono.regex': 'El número de teléfono debe tener exactamente 10 dígitos',
+    'nombre.required': 'El nombre es obligatorio',
+    'nombre.maxLength': 'El nombre no puede tener más de 255 caracteres',
+    'telefono.maxLength': 'El teléfono no puede tener más de 15 caracteres',
+    'telefono.mobile': 'El teléfono debe ser un número válido',
+    'correo.maxLength': 'El correo no puede tener más de 255 caracteres',
+    'correo.email': 'El correo debe ser una dirección de correo válida',
   }
 }
-
-

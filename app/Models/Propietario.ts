@@ -7,12 +7,6 @@ export default class Propietario extends BaseModel {
   @column({ isPrimary: true })
   public id: number
 
-  @column()
-  public usuario_id: string
-  
-  @column()
-  public telefono : string
-
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 

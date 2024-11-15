@@ -1,13 +1,10 @@
 import { DateTime } from 'luxon'
-import { column } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
 import Servicio from './Servicio'
 
 export default class Hotel extends Servicio {
   @column({ isPrimary: true })
   public id: number
-
-  @column()
-  public servicio_id: number
 
   @column()
   public nombreHotel: string

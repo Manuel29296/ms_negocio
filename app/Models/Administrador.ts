@@ -6,9 +6,6 @@ export default class Administrador extends BaseModel {
   public id: number
 
   @column()
-  public usuario_id: string
-
-  @column()
   public servicio_id : number
 
   @column.dateTime({ autoCreate: true })

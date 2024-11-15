@@ -8,11 +8,13 @@ export default class Cliente extends BaseModel {
   public id: number
 
   @column()
-  public tipo_cliente: string
+  public nombre: string
 
   @column()
-  public razon_social: string | null
+  public email: string
 
+  @column()
+  public telefono: string
 
   @hasMany(() => Contrato, {
     foreignKey: 'cliente_id'
