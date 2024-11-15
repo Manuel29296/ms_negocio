@@ -2,6 +2,7 @@ import { inject } from "@adonisjs/core/build/standalone";
 import type { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 import { ModelObject } from "@ioc:Adonis/Lucid/Orm";
 import Propietario from "App/Models/Propietario";
+import Conductor from "App/Models/Conductor";
 import PropietarioValidator from "App/Validators/PropietarioValidator";
 import UserService from "App/Services/User_service";
 
@@ -9,75 +10,68 @@ import UserService from "App/Services/User_service";
 export default class PropietariosController {
   constructor(protected userService: UserService) {}
 
+  // Obtener todos los propietarios (cargando conductor si aplica)
   public async find({ request, params }: HttpContextContract) {
     const { page, per_page } = request.only(["page", "per_page"]);
-    const propietarios: ModelObject[] = [];
-    const metaAux: ModelObject[] = [];
+    const propietariosQuery = Propietario.query().preload("conductor"); // Pre-carga la relación 'conductor'
 
     if (params.id) {
-      const thePropietario: Propietario = await Propietario.findOrFail(params.id);
-      propietarios.push(thePropietario);
-    } else if (page && per_page) {
-      const { meta, data } = await Propietario.query()
-        .paginate(page, per_page)
-        .then((res) => res.toJSON());
-
-      metaAux.push(meta);
-      propietarios.push(...data);
-    } else {
-      const allPropietarios = await Propietario.all();
-      propietarios.push(...allPropietarios);
+      const thePropietario = await propietariosQuery.where("id", params.id).firstOrFail();
+      return thePropietario;
     }
 
-    await Promise.all(
-      propietarios.map(async (propietario: Propietario, index: number) => {
-        const res = await this.userService.getUserById(propietario.usuario_id);
-        const { name, email } = res.data;
-        propietarios[index] = {
-          name,
-          email,
-          ...propietario.toJSON(),
-        };
-      }),
-    );
-
-    if (metaAux.length > 0) {
-      return { meta: metaAux, data: propietarios };
+    if (page && per_page) {
+      const paginatedData = await propietariosQuery.paginate(page, per_page);
+      return paginatedData.toJSON();
     }
 
-    return propietarios;
+    const allPropietarios = await propietariosQuery;
+    return allPropietarios;
   }
 
+  // Crear un nuevo Propietario (verificando la existencia del conductor)
   public async create({ request, response }: HttpContextContract) {
-    // Validar los datos del propietario
     const body = await request.validate(PropietarioValidator);
 
-    // Verificar si el usuario ya existe en el microservicio de seguridad
+    // Verificar si el usuario existe en el microservicio de seguridad
     let user;
     try {
-      // Se intenta obtener el usuario usando el usuario_id proporcionado
       user = await this.userService.getUserById(body.usuario_id.toString());
     } catch (error) {
       return response.status(400).send({ message: "User not found" });
     }
 
-    // Si el usuario no existe, no crear un nuevo usuario
-    // Se crea el propietario asociando el usuario ya existente
-    let propietarioData: ModelObject = { usuario_id: user.data._id };
+    // Verificar la existencia del conductor
+    const conductor = await Conductor.find(body.conductor_id);
+    if (!conductor) {
+      return response.status(400).send({ message: "Conductor no encontrado" });
+    }
 
-    // Asignar otros atributos del propietario, asegurando solo usar columnas de Propietario
+    // Crear datos del Propietario
+    const propietarioData: ModelObject = {
+      usuario_id: user.data._id,
+      conductorId: body.conductor_id,
+    };
     Object.keys(body).forEach(
-      (key) => Propietario.$hasColumn(key) && (propietarioData[key] = body[key]),
+      (key) => Propietario.$hasColumn(key) && (propietarioData[key] = body[key])
     );
 
-    // Crear el propietario en el microservicio de negocio
-    const thePropietario: Propietario = await Propietario.create(propietarioData);
+    const thePropietario = await Propietario.create(propietarioData);
     return thePropietario;
   }
 
+  // Actualizar un Propietario (verificando conductor)
   public async update({ params, request, response }: HttpContextContract) {
-    const thePropietario: Propietario = await Propietario.findOrFail(params.id);
+    const thePropietario = await Propietario.findOrFail(params.id);
     const data = request.body();
+
+    // Verificar la existencia del conductor si se incluye conductorId
+    if (data.conductorId) {
+      const conductor = await Conductor.find(data.conductorId);
+      if (!conductor) {
+        return response.status(400).send({ message: "Conductor no encontrado" });
+      }
+    }
 
     try {
       const user = { name: data.name, email: data.email };
@@ -86,19 +80,21 @@ export default class PropietariosController {
       return response.status(400).send({ message: "User not found" });
     }
 
-    // Actualizar atributos propios del propietario sin afectar el usuario
-    let newPropietario: ModelObject = {};
+    const newPropietarioData: ModelObject = {};
     Object.keys(data).forEach(
-      (key) => Propietario.$hasColumn(key) && (newPropietario[key] = data[key]),
+      (key) => Propietario.$hasColumn(key) && (newPropietarioData[key] = data[key])
     );
 
-    thePropietario.merge(newPropietario);
+    thePropietario.merge(newPropietarioData);
     return await thePropietario.save();
   }
 
+  // Eliminar un Propietario
   public async delete({ params, response }: HttpContextContract) {
-    const thePropietario: Propietario = await Propietario.findOrFail(params.id);
+    const thePropietario = await Propietario.findOrFail(params.id);
     response.status(204);
     return await thePropietario.delete();
   }
 }
+
+

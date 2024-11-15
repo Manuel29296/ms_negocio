@@ -23,10 +23,6 @@ export default class Servicio extends BaseModel {
     foreignKey: 'servicio_id',
   }) public administrador: HasOne<typeof Administrador>
 
-  @hasMany (() => Gasto, {
-    foreignKey: 'gasto_id',
-  }) public gasto: HasMany<typeof Gasto>
-
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 

@@ -17,6 +17,12 @@ export default class Conductor extends BaseModel {
   @column()
   public vehiculo_id: string
 
+  @column.dateTime({ autoCreate: true })
+  public createdAt: DateTime
+
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  public updatedAt: DateTime
+
   @hasMany(() => Turno, {
     foreignKey: 'conductor_id',
   }) public turnos: HasMany<typeof Turno>
@@ -29,9 +35,4 @@ export default class Conductor extends BaseModel {
     foreignKey: 'conductore_id',
   }) public gastos: HasMany<typeof Gasto>
 
-  @column.dateTime({ autoCreate: true })
-  public createdAt: DateTime
-
-  @column.dateTime({ autoCreate: true, autoUpdate: true })
-  public updatedAt: DateTime
 }

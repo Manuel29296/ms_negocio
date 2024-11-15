@@ -2,6 +2,7 @@ import { inject } from "@adonisjs/core/build/standalone";
 import type { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 import { ModelObject } from "@ioc:Adonis/Lucid/Orm";
 import PersonaNatural from "App/Models/PersonaNatural";
+import Cliente from "App/Models/Cliente";
 import PersonaNaturalValidator from "App/Validators/PersonaNaturalValidator";
 import UserService from "App/Services/User_service";
 
@@ -9,47 +10,26 @@ import UserService from "App/Services/User_service";
 export default class PersonaNaturalsController {
   constructor(protected userService: UserService) {}
 
-  // Método para obtener personas naturales (por id, paginadas o todas)
+  // Obtener todas las personas naturales (cargando cliente si aplica)
   public async find({ request, params }: HttpContextContract) {
     const { page, per_page } = request.only(["page", "per_page"]);
-    const personas: ModelObject[] = [];
-    const metaAux: ModelObject[] = [];
+    const personasQuery = PersonaNatural.query().preload("cliente"); // Pre-carga la relación 'cliente'
 
     if (params.id) {
-      const thePersona: PersonaNatural = await PersonaNatural.findOrFail(params.id);
-      personas.push(thePersona);
-    } else if (page && per_page) {
-      const { meta, data } = await PersonaNatural.query()
-        .paginate(page, per_page)
-        .then((res) => res.toJSON());
-
-      metaAux.push(meta);
-      personas.push(...data);
-    } else {
-      const allPersonas = await PersonaNatural.all();
-      personas.push(...allPersonas);
+      const thePersona = await personasQuery.where("id", params.id).firstOrFail();
+      return thePersona;
     }
 
-    await Promise.all(
-      personas.map(async (persona: PersonaNatural, index: number) => {
-        const res = await this.userService.getUserById(persona.usuario_id);
-        const { name, email } = res.data;
-        personas[index] = {
-          name,
-          email,
-          ...persona.toJSON(),
-        };
-      })
-    );
-
-    if (metaAux.length > 0) {
-      return { meta: metaAux, data: personas };
+    if (page && per_page) {
+      const paginatedData = await personasQuery.paginate(page, per_page);
+      return paginatedData.toJSON();
     }
 
-    return personas;
+    const allPersonas = await personasQuery;
+    return allPersonas;
   }
 
-  // Método para crear una nueva PersonaNatural
+  // Crear una nueva PersonaNatural (verificando la existencia del cliente)
   public async create({ request, response }: HttpContextContract) {
     const body = await request.validate(PersonaNaturalValidator);
 
@@ -61,21 +41,37 @@ export default class PersonaNaturalsController {
       return response.status(400).send({ message: "User not found" });
     }
 
-    // Crear datos de la persona natural
-    let personaData: ModelObject = { usuario_id: user.data._id };
+    // Verificar la existencia del cliente
+    const cliente = await Cliente.find(body.cliente_id);
+    if (!cliente) {
+      return response.status(400).send({ message: "Cliente no encontrado" });
+    }
+
+    // Crear datos de la PersonaNatural
+    const personaData: ModelObject = {
+      usuario_id: user.data._id,
+      cliente_id: body.cliente_id,
+    };
     Object.keys(body).forEach(
       (key) => PersonaNatural.$hasColumn(key) && (personaData[key] = body[key])
     );
 
-    // Crear la PersonaNatural en la base de datos
-    const thePersonaNatural: PersonaNatural = await PersonaNatural.create(personaData);
+    const thePersonaNatural = await PersonaNatural.create(personaData);
     return thePersonaNatural;
   }
 
-  // Método para actualizar una PersonaNatural
+  // Actualizar una PersonaNatural (verificando cliente)
   public async update({ params, request, response }: HttpContextContract) {
-    const thePersona: PersonaNatural = await PersonaNatural.findOrFail(params.id);
+    const thePersona = await PersonaNatural.findOrFail(params.id);
     const data = request.body();
+
+    // Verificar la existencia del cliente si se incluye cliente_id
+    if (data.cliente_id) {
+      const cliente = await Cliente.find(data.cliente_id);
+      if (!cliente) {
+        return response.status(400).send({ message: "Cliente no encontrado" });
+      }
+    }
 
     try {
       const user = { name: data.name, email: data.email };
@@ -84,7 +80,7 @@ export default class PersonaNaturalsController {
       return response.status(400).send({ message: "User not found" });
     }
 
-    let newPersonaData: ModelObject = {};
+    const newPersonaData: ModelObject = {};
     Object.keys(data).forEach(
       (key) => PersonaNatural.$hasColumn(key) && (newPersonaData[key] = data[key])
     );
@@ -93,10 +89,11 @@ export default class PersonaNaturalsController {
     return await thePersona.save();
   }
 
-  // Método para eliminar una PersonaNatural
+  // Eliminar una PersonaNatural
   public async delete({ params, response }: HttpContextContract) {
-    const thePersona: PersonaNatural = await PersonaNatural.findOrFail(params.id);
+    const thePersona = await PersonaNatural.findOrFail(params.id);
     response.status(204);
     return await thePersona.delete();
   }
 }
+

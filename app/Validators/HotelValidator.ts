@@ -24,7 +24,7 @@ export default class HotelValidator {
    *    ```
    */
   public schema = schema.create({
-    nombreHotel: schema.string({}, [
+    nombre_hotel: schema.string({}, [
       rules.minLength(3),
       rules.maxLength(100),
       rules.regex(/^[a-zA-Z0-9\s]+$/),  // Permite solo letras, números y espacios

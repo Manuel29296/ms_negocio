@@ -29,8 +29,6 @@ export default class Gasto extends BaseModel {
     foreignKey: 'conductor_id',
   }) public conductor: BelongsTo<typeof Conductor>
 
-
-
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 
