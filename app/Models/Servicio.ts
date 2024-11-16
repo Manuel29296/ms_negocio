@@ -19,6 +19,10 @@ export default class Servicio extends BaseModel {
   @column.date()
   public fecha: DateTime
 
+  @hasMany(() => Gasto, {
+    foreignKey: "servicio_id",
+  }) public gastos: HasMany<typeof Gasto>;
+
   @hasOne(() => Administrador, {
     foreignKey: 'servicio_id',
   }) public administrador: HasOne<typeof Administrador>

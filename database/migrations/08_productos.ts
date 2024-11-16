@@ -7,13 +7,15 @@ export default class extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments("id");
 
+      table.integer('cliente_id').unsigned().references('id').inTable('clientes').onDelete('CASCADE')
       table.string("nombre");
       table.float("peso");
       table.string("dimensiones");
       table.text("descripcion");
+      
       table.timestamp("created_at", { useTz: true });
       table.timestamp("updated_at", { useTz: true });
-      table.integer('cliente_id').unsigned().references('id').inTable('clientes').onDelete('CASCADE')
+      
     });
   }
 

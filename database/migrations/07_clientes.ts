@@ -9,6 +9,7 @@ export default class extends BaseSchema {
 
       table.string('tipo_cliente')
       table.string('razon_social')
+      
       table.timestamp('created_at', { useTz: true })
       table.timestamp('updated_at', { useTz: true })
     })

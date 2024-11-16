@@ -8,13 +8,9 @@ export default class extends BaseSchema {
       table.increments('id')
 
       //Referencia a Dirección y a ruta
-
       table.integer("direccion_id").unsigned().references('id').inTable('direccions').onDelete('CASCADE')
       table.integer("ruta_id").unsigned().references('id').inTable('rutas').onDelete('CASCADE')
 
-      /**
-       * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
-       */
       table.timestamp('created_at', { useTz: true })
       table.timestamp('updated_at', { useTz: true })
     })

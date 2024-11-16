@@ -12,7 +12,6 @@ export default class extends BaseSchema {
       table.string('direccion', 255).notNullable()
       table.string('telefono', 15).nullable()
       table.string('correo', 255).nullable()
-
       table.integer('persona_natural_id').unsigned().nullable().references('id').inTable('persona_naturals')
 
       table.timestamp('created_at', { useTz: true })

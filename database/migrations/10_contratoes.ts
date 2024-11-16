@@ -7,6 +7,7 @@ export default class extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
 
+      table.integer('cliente_id').unsigned().references('id').inTable('clientes').onDelete('CASCADE')
       table.timestamp('fecha_creacion', { useTz: true }).defaultTo(this.now())
       table.timestamp('fecha_inicio', { useTz: true })
       table.timestamp('fecha_fin_estimada', { useTz: true })
@@ -15,8 +16,6 @@ export default class extends BaseSchema {
       table.json('puntos_intermedios').nullable()
       table.string('punto_destino').notNullable()
 
-      table.integer('cliente_id').unsigned().references('id').inTable('clientes').onDelete('CASCADE')
-      
       table.timestamp('created_at', { useTz: true })
       table.timestamp('updated_at', { useTz: true })
     })

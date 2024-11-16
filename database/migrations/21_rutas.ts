@@ -7,6 +7,8 @@ export default class extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
 
+      table.integer('contrato_id').unsigned().references('id').inTable('contratoes').onDelete('CASCADE')
+      table.integer('vehiculo_id').unsigned().references('id').inTable('vehiculos').onDelete('CASCADE')
       table.string('origen');
       table.string('destino');
       table.integer('distancia');
@@ -15,8 +17,7 @@ export default class extends BaseSchema {
       
       table.timestamp('created_at', { useTz: true })
       table.timestamp('updated_at', { useTz: true })
-      table.integer('contrato_id').unsigned().references('id').inTable('contratoes').onDelete('CASCADE')
-      table.integer('vehiculo_id').unsigned().references('id').inTable('vehiculos').onDelete('CASCADE')
+      
     })
   }
 

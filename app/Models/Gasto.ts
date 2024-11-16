@@ -12,7 +12,7 @@ export default class Gasto extends BaseModel {
   public servicio_id: number
 
   @column()
-  public conductore_id: number
+  public conductor_id: number
 
   @column()
   public propietario_id: number

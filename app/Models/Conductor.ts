@@ -32,7 +32,7 @@ export default class Conductor extends BaseModel {
   }) public vehiculoConductor: HasMany<typeof VehiculoConductor>
 
   @hasMany(() => Gasto, {
-    foreignKey: 'conductore_id',
+    foreignKey: 'conductor_id',
   }) public gastos: HasMany<typeof Gasto>
 
 }
