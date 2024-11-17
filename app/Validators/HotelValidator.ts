@@ -1,49 +1,31 @@
-import { schema, CustomMessages, rules } from '@ioc:Adonis/Core/Validator'
-import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import { schema, rules } from '@ioc:Adonis/Core/Validator'
 
 export default class HotelValidator {
-  constructor(protected ctx: HttpContextContract) {}
-
-  /*
-   * Define schema to validate the "shape", "type", "formatting" and "integrity" of data.
-   *
-   * For example:
-   * 1. The username must be of data type string. But then also, it should
-   *    not contain special characters or numbers.
-   *    ```
-   *     schema.string([ rules.alpha() ])
-   *    ```
-   *
-   * 2. The email must be of data type string, formatted as a valid
-   *    email. But also, not used by any other user.
-   *    ```
-   *     schema.string([
-   *       rules.email(),
-   *       rules.unique({ table: 'users', column: 'email' }),
-   *     ])
-   *    ```
-   */
   public schema = schema.create({
-    nombre_hotel: schema.string({}, [
+    servicioId: schema.number([
+      rules.required(),
+      rules.exists({ table: 'servicios', column: 'id' })  // Verifica si el servicio existe en la tabla 'servicios'
+    ]),
+
+    nombre_hotel: schema.string([
+      rules.required(),
       rules.minLength(3),
-      rules.maxLength(100),
-      rules.regex(/^[a-zA-Z0-9\s]+$/),  // Permite solo letras, números y espacios
+      rules.maxLength(100)
     ]),
+
     noches: schema.number([
-      rules.range(1, 30),  // Supone que un usuario puede reservar entre 1 y 30 noches
-    ]),
+      rules.required(),
+      rules.range(1, 365)  // Supone que el número de noches debe estar entre 1 y 365
+    ])
   })
 
-  /**
-   * Custom messages for validation failures. You can make use of dot notation `(.)`
-   * for targeting nested fields and array expressions `(*)` for targeting all
-   * children of an array. For example:
-   *
-   * {
-   *   'profile.username.required': 'Username is required',
-   *   'scores.*.number': 'Define scores as valid numbers'
-   * }
-   *
-   */
-  public messages: CustomMessages = {}
+  public messages = {
+    'servicioId.required': 'El campo servicioId es obligatorio',
+    'servicioId.exists': 'El servicioId no existe en la base de datos',
+    'nombre_hotel.required': 'El nombre del hotel es obligatorio',
+    'nombre_hotel.minLength': 'El nombre del hotel debe tener al menos 3 caracteres',
+    'nombre_hotel.maxLength': 'El nombre del hotel no puede exceder los 100 caracteres',
+    'noches.required': 'El número de noches es obligatorio',
+    'noches.range': 'El número de noches debe estar entre 1 y 365',
+  }
 }

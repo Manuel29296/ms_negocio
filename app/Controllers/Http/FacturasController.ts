@@ -30,7 +30,7 @@ export default class FacturasController {
     public async update({ params, request }: HttpContextContract) {
         const theFactura: Factura = await Factura.findOrFail(params.id);
         const body = request.body();
-        theFactura.monto = body.name;
+        theFactura.monto = body.monto;
         return await theFactura.save();
     }
 

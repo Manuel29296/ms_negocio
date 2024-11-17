@@ -13,6 +13,10 @@ export default class Cuota extends BaseModel {
   @column.dateTime()
   public fechaPago: DateTime | null
 
+  @column()
+  public contrato_id: number
+
+
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 

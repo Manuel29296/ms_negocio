@@ -1,46 +1,74 @@
-import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import Operacion from 'App/Models/Operacion';
-import OperacionValidator from 'App/Validators/OperacionValidator';
+import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import Operacion from 'App/Models/Operacion'
+import OperacionValidator from 'App/Validators/OperacionValidator'
 
-export default class OperacionsController {
-    public async find({ request, params }: HttpContextContract) {
-        if (params.id) {
-            let theOperacion: Operacion = await Operacion.findOrFail(params.id)
-            return theOperacion;
-        } else {
-            const data = request.all()
-            if ("page" in data && "per_page" in data) {
-                const page = request.input('page', 1);
-                const perPage = request.input("per_page", 20);
-                return await Operacion.query().paginate(page, perPage)
-            } else {
-                return await Operacion.query()
-            }
+export default class OperationsController {
 
-        }
+  // Obtener todas las operaciones
+  public async index({ request }: HttpContextContract) {
+    const { page, per_page } = request.only(['page', 'per_page'])
+    const operationsQuery = Operacion.query().preload('vehiculo').preload('municipio')
 
-    }
-    public async create({ request }: HttpContextContract) {
-        await request.validate(OperacionValidator)
-        const body = request.body();
-        const theOperacion: Operacion = await Operacion.create(body);
-        return theOperacion;
+    // Paginar resultados si se pasa la opción de paginación
+    if (page && per_page) {
+      return operationsQuery.paginate(page, per_page)
     }
 
-    // public async update({ params, request }: HttpContextContract) {
-    //     const theOperacion: Operacion = await Operacion.findOrFail(params.id);
-    //     const body = request.body();
-    //     theOperacion.marca = body.marca;
-    //     theOperacion.tipo_carga = body.tipoCarga;
-    //     theOperacion.placa = body.placa;
-    //     theOperacion.capacidad = body.capacidad;
-    //     return await theOperacion.save();
-    // }
+    // Si no se pasa la paginación, devolver todas las operaciones
+    return operationsQuery
+  }
 
-    public async delete({ params, response }: HttpContextContract) {
-        const theOperacion: Operacion = await Operacion.findOrFail(params.id);
-            response.status(204);
-            return await theOperacion.delete();
+  // Obtener una operación por su ID
+  public async show({ params }: HttpContextContract) {
+    const operation = await Operacion.find(params.id)
+    
+    if (!operation) {
+      return { message: 'Operación no encontrada' }
     }
 
+    await operation.load('vehiculo')
+    await operation.load('municipio')
+
+    return operation
+  }
+
+  // Crear una nueva operación
+  public async store({ request }: HttpContextContract) {
+    // Validar los datos antes de crear
+    const data = await request.validate(OperacionValidator)
+    
+    // Crear y guardar la nueva operación
+    const operation = await Operacion.create(data)
+
+    return operation
+  }
+
+  // Actualizar una operación
+  public async update({ params, request }: HttpContextContract) {
+    const operation = await Operacion.find(params.id)
+
+    if (!operation) {
+      return { message: 'Operación no encontrada' }
+    }
+
+    const data = request.only(['municipio_id', 'vehiculo_id'])
+    operation.merge(data)
+
+    await operation.save()
+
+    return operation
+  }
+
+  // Eliminar una operación
+  public async destroy({ params }: HttpContextContract) {
+    const operation = await Operacion.find(params.id)
+
+    if (!operation) {
+      return { message: 'Operación no encontrada' }
+    }
+
+    await operation.delete()
+
+    return { message: 'Operación eliminada con éxito' }
+  }
 }

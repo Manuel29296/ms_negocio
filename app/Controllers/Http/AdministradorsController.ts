@@ -77,10 +77,13 @@ export default class AdministradorsController {
     const data = request.body();
 
     try {
-      const user = { name: data.name, email: data.email };
-      await this.userService.putUser(theAdministrador.usuario_id, user);
+      // Actualizar el usuario asociado al conductor
+      if (data.name && data.email) {
+        const user = { name: data.name, email: data.email };
+        await this.userService.putUser(theAdministrador.usuario_id, user);
+      }
     } catch (error) {
-      return response.status(400).send({ message: 'User not found' });
+      return response.status(400).send({ message: 'User not found or failed to update user' });
     }
 
     // Actualizar atributos propios del administrador sin afectar el usuario

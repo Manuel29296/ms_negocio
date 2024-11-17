@@ -1,48 +1,22 @@
-import { schema, CustomMessages, rules } from "@ioc:Adonis/Core/Validator";
-import type { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
+import { schema, rules } from '@ioc:Adonis/Core/Validator'
 
 export default class PropietarioVehiculoValidator {
-  constructor(protected ctx: HttpContextContract) {}
-
-  /*
-   * Define schema to validate the "shape", "type", "formatting" and "integrity" of data.
-   *
-   * For example:
-   * 1. The username must be of data type string. But then also, it should
-   *    not contain special characters or numbers.
-   *    ```
-   *     schema.string([ rules.alpha() ])
-   *    ```
-   *
-   * 2. The email must be of data type string, formatted as a valid
-   *    email. But also, not used by any other user.
-   *    ```
-   *     schema.string([
-   *       rules.email(),
-   *       rules.unique({ table: 'users', column: 'email' }),
-   *     ])
-   *    ```
-   */
   public schema = schema.create({
     propietario_id: schema.number([
-      rules.exists({ table: "propietarios", column: "id" }), // Verifica que el ID del propietario exista en la tabla propietarios
+      rules.required(),
+      rules.exists({ table: 'propietarios', column: 'id' })  // Verifica que el propietario exista
     ]),
 
     vehiculo_id: schema.number([
-      rules.exists({ table: "vehiculos", column: "id" }), // Verifica que el ID del vehículo exista en la tabla vehiculos
-    ]),
-  });
+      rules.required(),
+      rules.exists({ table: 'vehiculos', column: 'id' })  // Verifica que el vehículo exista
+    ])
+  })
 
-  /**
-   * Custom messages for validation failures. You can make use of dot notation `(.)`
-   * for targeting nested fields and array expressions `(*)` for targeting all
-   * children of an array. For example:
-   *
-   * {
-   *   'profile.username.required': 'Username is required',
-   *   'scores.*.number': 'Define scores as valid numbers'
-   * }
-   *
-   */
-  public messages: CustomMessages = {};
+  public messages = {
+    'propietario_id.required': 'El campo propietario_id es obligatorio',
+    'propietario_id.exists': 'El propietario con este ID no existe',
+    'vehiculo_id.required': 'El campo vehiculo_id es obligatorio',
+    'vehiculo_id.exists': 'El vehículo con este ID no existe',
+  }
 }

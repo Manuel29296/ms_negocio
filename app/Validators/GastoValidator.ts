@@ -1,40 +1,29 @@
-import { schema, CustomMessages } from '@ioc:Adonis/Core/Validator'
-import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import { schema, rules } from '@ioc:Adonis/Core/Validator'
 
 export default class GastoValidator {
-  constructor(protected ctx: HttpContextContract) {}
+  public schema = schema.create({
+    servicio_id: schema.number([
+      rules.required(),
+      rules.exists({ table: 'servicios', column: 'id' })  // Verifica si el servicio existe en la tabla 'servicios'
+    ]),
 
-  /*
-   * Define schema to validate the "shape", "type", "formatting" and "integrity" of data.
-   *
-   * For example:
-   * 1. The username must be of data type string. But then also, it should
-   *    not contain special characters or numbers.
-   *    ```
-   *     schema.string([ rules.alpha() ])
-   *    ```
-   *
-   * 2. The email must be of data type string, formatted as a valid
-   *    email. But also, not used by any other user.
-   *    ```
-   *     schema.string([
-   *       rules.email(),
-   *       rules.unique({ table: 'users', column: 'email' }),
-   *     ])
-   *    ```
-   */
-  public schema = schema.create({})
+    conductor_id: schema.number([
+      rules.required(),
+      rules.exists({ table: 'conductores', column: 'id' })  // Verifica si el conductor existe en la tabla 'conductores'
+    ]),
 
-  /**
-   * Custom messages for validation failures. You can make use of dot notation `(.)`
-   * for targeting nested fields and array expressions `(*)` for targeting all
-   * children of an array. For example:
-   *
-   * {
-   *   'profile.username.required': 'Username is required',
-   *   'scores.*.number': 'Define scores as valid numbers'
-   * }
-   *
-   */
-  public messages: CustomMessages = {}
+    propietario_id: schema.number([
+      rules.required(),
+      rules.exists({ table: 'propietarios', column: 'id' })  // Verifica si el propietario existe en la tabla 'propietarios'
+    ]),
+  })
+
+  public messages = {
+    'servicio_id.required': 'El campo servicio_id es obligatorio',
+    'servicio_id.exists': 'El servicio_id no existe en la base de datos',
+    'conductor_id.required': 'El campo conductor_id es obligatorio',
+    'conductor_id.exists': 'El conductor_id no existe en la base de datos',
+    'propietario_id.required': 'El campo propietario_id es obligatorio',
+    'propietario_id.exists': 'El propietario_id no existe en la base de datos',
+  }
 }

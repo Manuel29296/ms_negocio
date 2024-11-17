@@ -35,5 +35,24 @@ export default class RestaurantesController {
     response.status(204)
     return await theRestaurante.delete()
   }
+
+  // Método para actualizar un restaurante
+  public async update({ params, request, response }: HttpContextContract) {
+    const theRestaurante = await Restaurante.findOrFail(params.id)
+
+    // Validación si es necesario (si no se hace al momento de crear)
+    await request.validate(RestauranteValidator)
+
+    const body = request.body()
+
+    // Actualizamos los campos del restaurante
+    theRestaurante.merge(body)
+
+    // Guardamos los cambios
+    await theRestaurante.save()
+
+    return response.status(200).send(theRestaurante)
+  }
 }
+
 

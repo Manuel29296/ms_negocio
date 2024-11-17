@@ -1,40 +1,27 @@
-import { schema, CustomMessages } from '@ioc:Adonis/Core/Validator'
-import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import { schema, rules } from '@ioc:Adonis/Core/Validator'
 
 export default class TurnoValidator {
-  constructor(protected ctx: HttpContextContract) {}
+  public schema = schema.create({
+    fecha_inicio: schema.date({}, [
+      rules.required(),
+      rules.beforeField('fecha_fin')  
+    ]),
 
-  /*
-   * Define schema to validate the "shape", "type", "formatting" and "integrity" of data.
-   *
-   * For example:
-   * 1. The username must be of data type string. But then also, it should
-   *    not contain special characters or numbers.
-   *    ```
-   *     schema.string([ rules.alpha() ])
-   *    ```
-   *
-   * 2. The email must be of data type string, formatted as a valid
-   *    email. But also, not used by any other user.
-   *    ```
-   *     schema.string([
-   *       rules.email(),
-   *       rules.unique({ table: 'users', column: 'email' }),
-   *     ])
-   *    ```
-   */
-  public schema = schema.create({})
+    fecha_fin: schema.date({}, [
+      rules.required(),
+    ]),
 
-  /**
-   * Custom messages for validation failures. You can make use of dot notation `(.)`
-   * for targeting nested fields and array expressions `(*)` for targeting all
-   * children of an array. For example:
-   *
-   * {
-   *   'profile.username.required': 'Username is required',
-   *   'scores.*.number': 'Define scores as valid numbers'
-   * }
-   *
-   */
-  public messages: CustomMessages = {}
+    conductor_id: schema.number([
+      rules.required(),
+      rules.exists({ table: 'conductores', column: 'id' })  // Verifica que el conductor exista en la base de datos
+    ])
+  })
+
+  public messages = {
+    'fecha_inicio.required': 'La fecha de inicio es obligatoria',
+    'fecha_inicio.before': 'La fecha de inicio debe ser antes de la fecha de fin',
+    'fecha_fin.required': 'La fecha de fin es obligatoria',
+    'conductor_id.required': 'El conductor es obligatorio',
+    'conductor_id.exists': 'El conductor asignado no existe en la base de datos',
+  }
 }

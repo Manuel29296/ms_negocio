@@ -15,18 +15,42 @@ export default class PersonaNaturalsController {
     const { page, per_page } = request.only(["page", "per_page"]);
     const personasQuery = PersonaNatural.query().preload("cliente"); // Pre-carga la relación 'cliente'
 
+    let personas: ModelObject[] = [];
+    const metaAux: ModelObject[] = [];
+
     if (params.id) {
       const thePersona = await personasQuery.where("id", params.id).firstOrFail();
-      return thePersona;
+      personas.push(thePersona);
+    } else if (page && per_page) {
+      const { meta, data } = await personasQuery.paginate(page, per_page).then((res) => res.toJSON());
+      metaAux.push(meta);
+      personas.push(...data);
+    } else {
+      personas = await personasQuery;
     }
 
-    if (page && per_page) {
-      const paginatedData = await personasQuery.paginate(page, per_page);
-      return paginatedData.toJSON();
+    // Obtener la información del usuario para cada PersonaNatural
+    await Promise.all(
+      personas.map(async (persona: PersonaNatural, index: number) => {
+        try {
+          const res = await this.userService.getUserById(persona.usuario_id);
+          const { name, email } = res.data;
+          personas[index] = {
+            name,
+            email,
+            ...persona.toJSON(),
+          };
+        } catch (error) {
+          // En caso de error al obtener el usuario, manejar el error (puedes dejarlo vacío si no quieres notificarlo)
+        }
+      })
+    );
+
+    if (metaAux.length > 0) {
+      return { meta: metaAux, data: personas };
     }
 
-    const allPersonas = await personasQuery;
-    return allPersonas;
+    return personas;
   }
 
   // Crear una nueva PersonaNatural (verificando la existencia del cliente)
@@ -74,10 +98,13 @@ export default class PersonaNaturalsController {
     }
 
     try {
-      const user = { name: data.name, email: data.email };
-      await this.userService.putUser(thePersona.usuario_id, user);
+      // Actualizar el usuario asociado al conductor
+      if (data.name && data.email) {
+        const user = { name: data.name, email: data.email };
+        await this.userService.putUser(thePersona.usuario_id, user);
+      }
     } catch (error) {
-      return response.status(400).send({ message: "User not found" });
+      return response.status(400).send({ message: 'User not found or failed to update user' });
     }
 
     const newPersonaData: ModelObject = {};
@@ -96,4 +123,5 @@ export default class PersonaNaturalsController {
     return await thePersona.delete();
   }
 }
+
 

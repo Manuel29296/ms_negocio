@@ -4,25 +4,6 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 export default class VehiculoValidator {
   constructor(protected ctx: HttpContextContract) {}
 
-  /*
-   * Define schema to validate the "shape", "type", "formatting" and "integrity" of data.
-   *
-   * For example:
-   * 1. The username must be of data type string. But then also, it should
-   *    not contain special characters or numbers.
-   *    ```
-   *     schema.string([ rules.alpha() ])
-   *    ```
-   *
-   * 2. The email must be of data type string, formatted as a valid
-   *    email. But also, not used by any other user.
-   *    ```
-   *     schema.string([
-   *       rules.email(),
-   *       rules.unique({ table: 'users', column: 'email' }),
-   *     ])
-   *    ```
-   */
   public schema = schema.create({
     marca: schema.string({}, [
       rules.alpha({ allow: ['space'] }),  // Acepta solo letras y espacios
@@ -39,21 +20,23 @@ export default class VehiculoValidator {
       rules.maxLength(50),  // Máximo 50 caracteres para el tipo de carga
     ]),
   
-    capacidad: schema.number([
-      rules.range(1, 100000),  // Capacidad debe estar en un rango válido (ejemplo: entre 1 y 100,000 kilogramos)
-    ]),
+    capacidad: schema.number([rules.range(1, 100000)]),  // Capacidad debe estar en un rango válido
   })
 
-  /**
-   * Custom messages for validation failures. You can make use of dot notation `(.)`
-   * for targeting nested fields and array expressions `(*)` for targeting all
-   * children of an array. For example:
-   *
-   * {
-   *   'profile.username.required': 'Username is required',
-   *   'scores.*.number': 'Define scores as valid numbers'
-   * }
-   *
-   */
-  public messages: CustomMessages = {}
+  public messages: CustomMessages = {
+    'marca.required': 'La marca es obligatoria',
+    'marca.alpha': 'La marca solo puede contener letras y espacios',
+    'marca.maxLength': 'La marca no puede exceder los 50 caracteres',
+
+    'placa.required': 'La placa es obligatoria',
+    'placa.regex': 'La placa debe tener el formato válido (3 letras seguidas de 3 o 4 números)',
+    'placa.unique': 'La placa ya está registrada en la base de datos',
+
+    'tipo_carga.required': 'El tipo de carga es obligatorio',
+    'tipo_carga.alpha': 'El tipo de carga solo puede contener letras, espacios o guiones bajos',
+    'tipo_carga.maxLength': 'El tipo de carga no puede exceder los 50 caracteres',
+
+    'capacidad.required': 'La capacidad es obligatoria',
+    'capacidad.range': 'La capacidad debe estar entre 1 y 100,000',
+  }
 }
