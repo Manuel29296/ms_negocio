@@ -9,7 +9,7 @@ export default class GastoValidator {
 
     conductor_id: schema.number([
       rules.required(),
-      rules.exists({ table: 'conductores', column: 'id' })  // Verifica si el conductor existe en la tabla 'conductores'
+      rules.exists({ table: 'conductors', column: 'id' })  // Verifica si el conductor existe en la tabla 'conductores'
     ]),
 
     propietario_id: schema.number([

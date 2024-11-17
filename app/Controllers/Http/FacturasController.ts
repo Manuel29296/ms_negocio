@@ -1,6 +1,7 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Factura from 'App/Models/Factura';
 import FacturaValidator from 'App/Validators/FacturaValidator';
+import axios from 'axios';
 
 export default class FacturasController {
     public async find({ request, params }: HttpContextContract) {
@@ -24,7 +25,33 @@ export default class FacturasController {
         await request.validate(FacturaValidator)
         const body = request.body();
         const theFactura: Factura = await Factura.create(body);
-        return theFactura;
+                // Prepara los datos del servicio para enviar en el correo
+                const emailData = {
+                    email: body.email,
+                    subject: 'Factura',
+                    body: `
+                        Detalles de la factura generada: 
+            
+                        ID: ${theFactura.id}
+                        Monto: ${theFactura.monto}
+                        Fecha: ${theFactura.fecha}
+                        Cuota: ${theFactura.cuota_id}
+                        Gasto: ${theFactura.gasto_id}
+                    `
+                };
+            
+                try {
+                    const emailResponse = await axios.post(' http://127.0.0.1:5000/send-email', emailData);
+            
+                    if (emailResponse.status === 200) {
+                        console.log('Email sent');
+                    } else {
+                        console.log('Email not sent');
+                    }
+                } catch (error) {
+                    console.error(error);
+                }
+        
     }
 
     public async update({ params, request }: HttpContextContract) {

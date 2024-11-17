@@ -16,6 +16,9 @@ export default class Servicio extends BaseModel {
   @column()
   public tipo: string
 
+  @column()
+  public email: string
+
   @column.date()
   public fecha: DateTime
 

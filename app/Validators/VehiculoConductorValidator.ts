@@ -9,7 +9,7 @@ export default class VehiculoConductorValidator {
 
     conductor_id: schema.number([
       rules.required(),
-      rules.exists({ table: 'conductores', column: 'id' })  // Verifica que el conductor exista en la base de datos
+      rules.exists({ table: 'conductors', column: 'id' })  // Verifica que el conductor exista en la base de datos
     ])
   })
 
