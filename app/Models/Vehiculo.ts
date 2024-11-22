@@ -39,4 +39,9 @@ export default class Vehiculo extends BaseModel {
   @hasMany(() => Operacion, {
     foreignKey: "vehiculo_id",
   }) public operaciones: HasMany<typeof Operacion>;
+
+  @hasMany(() => Seguro, {
+    foreignKey: "vehiculo_id",  
+  })
+  public seguros: HasMany<typeof Seguro>;
 }

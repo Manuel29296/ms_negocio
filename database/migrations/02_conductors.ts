@@ -8,7 +8,7 @@ export default class extends BaseSchema {
       table.increments('id')
 
       table.string("licencia")
-      table.string("vehiculo_id")
+      table.integer("vehiculo_id").unsigned().references('id').inTable('vehiculos')
       table.string('usuario_id')
 
       table.timestamp('created_at', { useTz: true })

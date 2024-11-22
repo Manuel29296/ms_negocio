@@ -15,7 +15,7 @@ export default class Conductor extends BaseModel {
   public licencia: string
 
   @column()
-  public vehiculo_id: string
+  public vehiculo_id: number
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime

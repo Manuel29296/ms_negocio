@@ -2,7 +2,7 @@ import { schema, rules } from '@ioc:Adonis/Core/Validator'
 
 export default class HotelValidator {
   public schema = schema.create({
-    servicioId: schema.number([
+    servicio_id: schema.number([
       rules.required(),
       rules.exists({ table: 'servicios', column: 'id' })  // Verifica si el servicio existe en la tabla 'servicios'
     ]),
