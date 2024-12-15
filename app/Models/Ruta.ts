@@ -23,6 +23,12 @@ export default class Ruta extends BaseModel {
   @column()
   public costo_estimado: number 
 
+  @column()
+  public contrato_id: number
+
+  @column()
+  public vehiculo_id: number
+
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 

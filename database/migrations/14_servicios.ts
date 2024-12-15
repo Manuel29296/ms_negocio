@@ -12,6 +12,9 @@ export default class extends BaseSchema {
       table.integer("precio")
       table.string("tipo")
       table.date("fecha")
+      table.json("origen") // Almacena un array JSON con latitud y longitud
+      table.json("destino") // Almacena un array JSON con latitud y longitud
+
 
       table.timestamp('created_at', { useTz: true })
       table.timestamp('updated_at', { useTz: true })
