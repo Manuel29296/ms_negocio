@@ -5,9 +5,9 @@ export default class ContratoValidator {
   constructor(protected ctx: HttpContextContract) {}
 
   public schema = schema.create({
-    fecha_creacion: schema.date({ format: 'yyyy-MM-dd' }, [rules.required()]), // Fecha de creación del contrato
-    fecha_inicio: schema.date({ format: 'yyyy-MM-dd' }, [rules.required()]), // Fecha de inicio del contrato
-    fecha_fin_estimada: schema.date({ format: 'yyyy-MM-dd' }, [rules.required()]), // Fecha estimada de fin del contrato
+    // fecha_creacion: schema.date({ format: 'yyyy-MM-dd' }), // Fecha de creación del contrato
+    // fecha_inicio: schema.date({ format: 'yyyy-MM-dd' }), // Fecha de inicio del contrato
+    // fecha_fin_estimada: schema.date({ format: 'yyyy-MM-dd' }), // Fecha estimada de fin del contrato
     estado: schema.string([ // El estado del contrato (por ejemplo: 'activo', 'finalizado', etc.)
       rules.required(),
       rules.maxLength(255), 

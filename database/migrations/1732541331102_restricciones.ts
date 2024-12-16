@@ -1,21 +1,20 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
 
 export default class extends BaseSchema {
-  protected tableName = 'servicios'
+  protected tableName = 'restricciones'
 
   public async up () {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
-      
-      table.string("email")
+
       table.string("descripcion")
-      table.integer("precio")
-      table.string("tipo")
-      table.date("fecha")
-      table.json("origen") // Almacena un array JSON con latitud y longitud
-      table.json("destino") // Almacena un array JSON con latitud y longitud
+      table.date("fecha_inicio")
+      table.date("fecha_fin")
 
-
+      table.integer("municipio_id").unsigned().references('id').inTable('municipios').onDelete('CASCADE') 
+      /**
+       * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
+       */
       table.timestamp('created_at', { useTz: true })
       table.timestamp('updated_at', { useTz: true })
     })

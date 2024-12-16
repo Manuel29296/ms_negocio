@@ -1,9 +1,11 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Vehiculo from 'App/Models/Vehiculo';
+import Ws from 'App/Services/Ws';
 import VehiculoValidator from 'App/Validators/VehiculoValidator';
 
 export default class VehiculosController {
     public async find({ request, params }: HttpContextContract) {
+        Ws.io.emit('notifications', { message: 'end process bioinformatic backend' })
         if (params.id) {
             let theVehiculo: Vehiculo = await Vehiculo.findOrFail(params.id)
             return theVehiculo;
@@ -42,5 +44,17 @@ export default class VehiculosController {
             response.status(204);
             return await theVehiculo.delete();
     }
-
+    //Endpoint para notificar a los clientes conectados al socket
+    public async notificar({ response }: HttpContextContract) {
+        try {
+          console.log('Enviando notificación...');
+          Ws.io.emit('notifications', { message: 'end process bioinformatic backend' });
+          console.log('Notificación enviada correctamente');
+          return response.status(200).send({ message: 'ok' });
+        } catch (error) {
+          console.error('Error al enviar notificación:', error);
+          return response.status(500).send({ message: 'Error interno al notificar' });
+        }
+      }
+      
 }
