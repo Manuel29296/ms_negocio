@@ -12,6 +12,7 @@ export default class extends BaseSchema {
       table.float("peso");
       table.string("dimensiones");
       table.text("descripcion");
+      table.integer('lote_id').unsigned().references('id').inTable('lotes').onDelete('CASCADE')
       
       table.timestamp("created_at", { useTz: true });
       table.timestamp("updated_at", { useTz: true });

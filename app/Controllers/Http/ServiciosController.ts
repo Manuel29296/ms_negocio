@@ -126,7 +126,7 @@ export default class ServiciosController {
     fs.writeFileSync(mapFilePath, mapaHTML);
 
     // URL del mapa
-    const mapURL = `http://127.0.0.1:5500/app/mapas/mapa_${theServicio.id}.html`;
+    const mapURL = `http://127.0.0.1:5500/app/mapas/mapa_${theServicio.id}.html/mapa_${theServicio.id}.html`;
 
     // Preparar los datos para el correo
     const emailData = {

@@ -21,4 +21,6 @@ export default class ListaOrden extends BaseModel {
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime
+
+
 }

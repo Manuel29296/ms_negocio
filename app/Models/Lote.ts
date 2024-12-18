@@ -3,6 +3,7 @@ import { BaseModel, BelongsTo, belongsTo, column, HasMany, hasMany } from '@ioc:
 import Producto from './Producto'
 import Ruta from './Ruta'
 
+
 export default class Lote extends BaseModel {
   @column({ isPrimary: true })
   public id: number
@@ -36,7 +37,7 @@ export default class Lote extends BaseModel {
 
   // Relación 1 a muchos con Producto
   @hasMany(() => Producto, {
-    foreignKey: 'producto_id', 
+    foreignKey: 'lote_id', 
   })
   public productos: HasMany<typeof Producto>
 
@@ -44,5 +45,6 @@ export default class Lote extends BaseModel {
     foreignKey: 'ruta_id' 
   })
   public ruta: BelongsTo<typeof Ruta>
+  
 }
 

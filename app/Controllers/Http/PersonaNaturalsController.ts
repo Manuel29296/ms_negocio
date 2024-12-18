@@ -3,7 +3,7 @@ import type { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 import { ModelObject } from "@ioc:Adonis/Lucid/Orm";
 import PersonaNatural from "App/Models/PersonaNatural";
 import Cliente from "App/Models/Cliente";
-import PersonaNaturalValidator from "App/Validators/PersonaNaturalValidator";
+// import PersonaNaturalValidator from "App/Validators/PersonaNaturalValidator";
 import UserService from "App/Services/User_service";
 
 @inject([UserService])
@@ -55,7 +55,8 @@ export default class PersonaNaturalsController {
 
   // Crear una nueva PersonaNatural (verificando la existencia del cliente)
   public async create({ request, response }: HttpContextContract) {
-    const body = await request.validate(PersonaNaturalValidator);
+    const body = request.only(['usuario_id', 'cliente_id']); // Add this line to define the body variable
+    // const body = await request.validate(PersonaNaturalValidator);
 
     // Verificar si el usuario existe en el microservicio de seguridad
     let user;

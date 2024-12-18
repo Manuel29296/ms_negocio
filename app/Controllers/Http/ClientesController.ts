@@ -6,8 +6,12 @@ export default class ClientesController {
   // Método para obtener todos los clientes o uno específico por ID
   public async find({ request, params }: HttpContextContract) {
     if (params.id) {
-      // Si se proporciona un ID, devolver un cliente específico
-      const cliente = await Cliente.findOrFail(params.id)
+      // Si se proporciona un ID, devolver un cliente específico con productos y contratos
+      const cliente = await Cliente.query()
+        .where('id', params.id)
+        .preload('productos')
+        .preload('contratos')  // Cargar contratos asociados
+        .firstOrFail()
       return cliente
     } else {
       // Si no se proporciona un ID, devolver todos los clientes (con paginación si es necesario)
@@ -15,11 +19,25 @@ export default class ClientesController {
       if ('page' in data && 'per_page' in data) {
         const page = request.input('page', 1)
         const perPage = request.input('per_page', 20)
-        return await Cliente.query().paginate(page, perPage)
+        const clientes = await Cliente.query()
+          .preload('productos')
+          .preload('contratos')  // Cargar contratos asociados
+          .paginate(page, perPage)
+        return clientes
       } else {
-        return await Cliente.query()
+        const clientes = await Cliente.query()
+          .preload('productos')
+          .preload('contratos')  // Cargar contratos asociados
+        return clientes
       }
     }
+  }
+
+  // Método para obtener los contratos de un cliente
+  public async findContratos({ params }: HttpContextContract) {
+    const cliente = await Cliente.findOrFail(params.id)  // Buscar el cliente por ID
+    const contratos = await cliente.related('contratos').query()  // Obtener los contratos relacionados
+    return contratos
   }
 
   // Método para crear un nuevo cliente
@@ -50,3 +68,4 @@ export default class ClientesController {
     return { message: 'Cliente eliminado correctamente' }
   }
 }
+

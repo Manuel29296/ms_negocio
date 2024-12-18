@@ -1,6 +1,6 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import ListaOrden from 'App/Models/ListaOrden'
-import ListaOrdenValidator from 'App/Validators/ListaOrdenValidator'
+// import ListaOrdenValidator from 'App/Validators/ListaOrdenValidator'
 
 export default class ListaOrdenController {
   // Obtener una o todas las ListaOrden
@@ -18,7 +18,7 @@ export default class ListaOrdenController {
 
   // Crear una nueva ListaOrden
   public async create({ request }: HttpContextContract) {
-    await request.validate(ListaOrdenValidator)
+    // await request.validate(ListaOrdenValidator)
     const data = request.body()
     const listaOrden = await ListaOrden.create(data)
     return listaOrden

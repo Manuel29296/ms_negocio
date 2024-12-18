@@ -1,26 +1,30 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Lote from 'App/Models/Lote'
-import LoteValidator from 'App/Validators/LoteValidator'
+// import LoteValidator from 'App/Validators/LoteValidator'
 
 export default class LotesController {
     public async find({ request, params }: HttpContextContract) {
         if (params.id) {
-            const lote = await Lote.findOrFail(params.id)
+            const lote = await Lote.query()
+                .where('id', params.id)
+                .preload('productos') // Pre-cargar la relación de productos
+                .firstOrFail()
             return lote
         } else {
             const data = request.all()
             if ("page" in data && "per_page" in data) {
                 const page = request.input('page', 1)
                 const perPage = request.input('per_page', 20)
-                return await Lote.query().paginate(page, perPage)
+                return await Lote.query().preload('productos').paginate(page, perPage)
             } else {
-                return await Lote.query()
+                return await Lote.query().preload('productos')
             }
         }
     }
+    
 
     public async create({ request }: HttpContextContract) {
-        await request.validate(LoteValidator)
+        // await request.validate(LoteValidator)
         const body = request.body()
         const lote = await Lote.create(body)
         return lote
